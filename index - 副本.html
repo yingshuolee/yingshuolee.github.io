@@ -1,0 +1,76 @@
+<div id="entrance-overlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-black overflow-hidden cursor-pointer">
+    <div id="portal-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-[1500ms] ease-in-out" 
+         style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2000');">
+         <div class="absolute inset-0 bg-black/30"></div>
+    </div>
+    
+    <div id="portal-text" class="relative z-10 text-center">
+        <h2 class="serif text-white text-3xl md:text-5xl tracking-[0.2em] font-light mb-4 opacity-0 translate-y-4 transition-all duration-1000">
+            ENTER SPACE
+        </h2>
+        <div class="w-12 h-[1px] bg-white/50 mx-auto opacity-0 transition-all duration-1000 delay-300"></div>
+    </div>
+</div>
+
+/* 引入 EB Garamond 作为 Bernhard Modern 的优雅替代 */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&display=swap');
+
+.serif {
+    font-family: 'EB Garamond', serif !important;
+}
+
+/* 穿越动画效果 */
+.portal-zoom-out {
+    transform: scale(2.5); /* 模拟向室内走近的效果 */
+    opacity: 0;
+}
+
+.overlay-hide {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease-in-out;
+}
+
+/* 让主体内容在入场前保持模糊或静止，增加仪式感 */
+#main-content {
+    transition: filter 1.5s ease, transform 1.5s ease;
+    filter: blur(10px);
+    transform: scale(0.95);
+}
+
+#main-content.reveal {
+    filter: blur(0);
+    transform: scale(1);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('entrance-overlay');
+    const portalBg = document.getElementById('portal-bg');
+    const portalText = document.getElementById('portal-text').querySelectorAll('h2, div');
+    const mainContent = document.body.firstElementChild; // 假设你的主容器是第一个元素
+
+    // 1. 文字自动浮现
+    setTimeout(() => {
+        portalText.forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        });
+    }, 500);
+
+    // 2. 点击穿越逻辑
+    overlay.addEventListener('click', () => {
+        // 图片放大并淡出，模拟“推门而入”
+        portalBg.classList.add('portal-zoom-out');
+        overlay.classList.add('overlay-hide');
+        
+        // 唤醒主页面
+        // 注意：请确保你原来的代码外层包裹了一个 id="main-content" 的 div
+        const main = document.getElementById('main-content');
+        if (main) main.classList.add('reveal');
+
+        // 彻底移除蒙层，防止挡住交互
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 1500);
+    });
+});
